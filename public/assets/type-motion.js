@@ -1,6 +1,6 @@
 // Display type is split only where it acts as a visual element. Paragraphs,
 // links and controls stay as ordinary text so they remain easy to read.
-const displaySelector = '.landing-line, .page-intro h1, .case-intro h1, .section-heading h2, .burst-heading h2, .finale-copy h2, .footer-main h2, .now-teaser h2';
+const displaySelector = '.landing-line, .introduction h2, .practice-heading h2, .page-intro h1, .case-intro h1, .section-heading h2, .burst-heading h2, .finale-copy h2, .footer-main h2, .now-teaser h2';
 let entranceObserver;
 
 function splitDisplayText(heading) {
@@ -50,6 +50,9 @@ export function setupTypography(root, disabled = false) {
   if (disabled) return;
   const headings = [...root.querySelectorAll(displaySelector)];
   headings.forEach(splitDisplayText);
+  const finaleHeading = root.querySelector('.finale-copy h2');
+  if (finaleHeading) finaleHeading.classList.remove('type-pending');
+  finaleHeading?.classList.add('type-finale');
   entranceObserver = new IntersectionObserver(entries => {
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;
@@ -57,7 +60,7 @@ export function setupTypography(root, disabled = false) {
       entranceObserver.unobserve(entry.target);
     }
   }, { threshold: .1, rootMargin: '0px 0px -7% 0px' });
-  headings.forEach(heading => entranceObserver.observe(heading));
+  headings.filter(heading => heading !== finaleHeading).forEach(heading => entranceObserver.observe(heading));
 }
 
 export function activateGlyph(event, disabled = false) {
@@ -81,6 +84,34 @@ export function activateGlyph(event, disabled = false) {
     ], { duration: 470, delay: 65, easing: 'ease-out' });
   }
   return true;
+}
+
+export function scrubHeroTypography(lines, progress) {
+  if (progress <= .01 && !lines.some(line => line.classList.contains('type-scrolling'))) return;
+  for (const [lineIndex, line] of lines.entries()) {
+    line.classList.add('type-scrolling');
+    const faces = line.querySelectorAll('.type-glyph-face');
+    for (const [glyphIndex, face] of faces.entries()) {
+      const start = .13 + lineIndex * .12 + glyphIndex * .006;
+      const range = .42;
+      const raw = Math.min(1, Math.max(0, (progress - start) / range));
+      const eased = raw * raw * (3 - 2 * raw);
+      face.style.setProperty('--glyph-exit', (eased * 110).toFixed(2) + '%');
+    }
+  }
+}
+
+export function scrubFinaleTypography(heading, progress) {
+  if (!heading?.classList.contains('type-finale')) return;
+  const lines = heading.querySelectorAll(':scope > span');
+  for (const [lineIndex, line] of lines.entries()) {
+    for (const [glyphIndex, face] of line.querySelectorAll('.type-glyph-face').entries()) {
+      const start = 14 + lineIndex * 10 + glyphIndex * .45;
+      const raw = Math.min(1, Math.max(0, (progress - start) / 19));
+      const eased = raw * raw * (3 - 2 * raw);
+      face.style.setProperty('--glyph-final-out', ((1 - eased) * 108).toFixed(2) + '%');
+    }
+  }
 }
 
 export function exitTypography(root, disabled = false) {

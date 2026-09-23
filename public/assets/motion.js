@@ -1,6 +1,6 @@
 import {vertex,fragment} from './prism-water.js';
 import {composeScene,smooth} from './camera-director.js';
-import {setupTypography,activateGlyph,exitTypography} from './type-motion.js';
+import {setupTypography,activateGlyph,exitTypography,scrubHeroTypography,scrubFinaleTypography} from './type-motion.js';
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const coarse=matchMedia('(pointer: coarse)');
 let userPaused=false;
@@ -125,11 +125,12 @@ function choreograph(scene){
   if(paused)return;
   const mobile=layout.mobile;
   if(hero){
-    document.querySelectorAll('.landing-line').forEach((line,i)=>{
+    const heroLines=[...document.querySelectorAll('.landing-line')];
+    heroLines.forEach((line,i)=>{
       const shift=smooth(i*5,78+i*5,scene.push*100);
       line.style.transform=`translate3d(${(i===1?1:-1)*shift*(mobile?35:120)}px,${-shift*(i===2?0:30+i*10)}px,0)`;
-      line.style.opacity=String(1-smooth(24+i*25,86+i*25,scene.push*100));
     });
+    scrubHeroTypography(heroLines,scene.push);
     document.querySelector('.landing-bottom').style.opacity=String(1-smooth(12,64,scene.push*100));
     intro.style.setProperty('--copy-reveal',scene.reveal);
     intro.style.setProperty('--copy-x',`${(1-scene.reveal)*(mobile?-18:-48)}px`);
@@ -164,6 +165,7 @@ function choreograph(scene){
     finale.querySelector('clipPath path').setAttribute('transform',`translate(${cx} ${cy}) rotate(${angle}) scale(${size}) translate(-500 -500)`);
     finale.style.setProperty('--finale-gradient-angle',`${120+angle*.38}deg`);
     finale.style.setProperty('--finale-text-x',`${layout.w*.12*(1-smooth(18,72,p))}px`);
+    scrubFinaleTypography(finale.querySelector('.finale-copy h2'),p);
     const detail=smooth(62,83,p);
     finale.style.setProperty('--finale-detail',String(detail));
     finale.style.setProperty('--finale-detail-y',`${(1-detail)*16}px`);
