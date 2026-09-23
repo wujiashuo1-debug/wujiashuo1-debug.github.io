@@ -158,3 +158,17 @@ body[data-scene="contact"] .direct-contact a{padding:32px 0;border-bottom:1px so
  body[data-scene="contact"] .contact-intro>h1{max-width:100%}
  body[data-scene="contact"] .direct-contact a{padding:24px 0}
 }
+
+/* Type shares the sphere's rhythm: a masked entry, a single-glyph response,
+   and a short exit when the reader chooses another page. */
+.kinetic-type .type-word{display:inline-block;white-space:nowrap}
+.kinetic-type .type-glyph{display:inline-block;vertical-align:bottom;overflow:clip;line-height:inherit;perspective:480px;pointer-events:auto}
+.kinetic-type .type-glyph-face{display:inline-block;transform-origin:50% 55%;transform:translate3d(0,0,0);opacity:1;backface-visibility:visible;transition:transform .68s cubic-bezier(.18,.77,.24,1),opacity .38s ease;transition-delay:calc(var(--glyph-index,0) * 22ms)}
+.kinetic-type.type-pending .type-glyph-face{transform:translate3d(0,108%,0) rotate(-6deg);opacity:.35}
+.kinetic-type .type-glyph:hover{cursor:default}
+.landing-title .type-glyph{pointer-events:auto}
+.landing-line.kinetic-type{pointer-events:none}
+.landing-line.kinetic-type .type-glyph{pointer-events:auto}
+.motion-paused .kinetic-type .type-glyph-face{transform:none!important;opacity:1!important;transition:none!important}
+@media(prefers-reduced-motion:reduce){.kinetic-type .type-glyph-face{transform:none!important;opacity:1!important;transition:none!important}}
+@media print{.kinetic-type .type-glyph-face{transform:none!important;opacity:1!important}}

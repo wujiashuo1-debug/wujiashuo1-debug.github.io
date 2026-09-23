@@ -1,5 +1,6 @@
 import {vertex,fragment} from './prism-water.js';
 import {composeScene,smooth} from './camera-director.js';
+import {setupTypography,activateGlyph,exitTypography} from './type-motion.js';
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const coarse=matchMedia('(pointer: coarse)');
 let userPaused=false;
@@ -107,6 +108,7 @@ function setupPage(){
   document.body.dataset.scene=location.pathname.split('/')[1]||'home';
   document.documentElement.classList.add('orb-ready');
   if(!hero)intro?.classList.add('cinema-intro');
+  setupTypography(document.querySelector('.page-shell'),paused);
   cards=[...document.querySelectorAll('.project-card')].map((el,i)=>({el,index:i,top:0}));
   layoutDirty=true;measure();
 }
@@ -202,7 +204,7 @@ addEventListener('pointermove',event=>{
   const s=cursorState;
   s.tx=event.clientX;s.ty=event.clientY;
   if(!s.visible){s.x=s.tx;s.y=s.ty;s.vx=s.vy=0;s.visible=true;cursor.style.opacity='1';}
-  const interactive=event.target.closest('a[href],button:not(:disabled),input:not(:disabled),textarea:not(:disabled),select:not(:disabled),summary,[role="button"],[role="link"],[contenteditable="true"]');
+  const interactive=event.target.closest('a[href],button:not(:disabled),input:not(:disabled),textarea:not(:disabled),select:not(:disabled),summary,[role="button"],[role="link"],[contenteditable="true"],.type-glyph');
   s.targetScale=interactive?1.8:1;
 },{passive:true});
 document.addEventListener('pointerleave',hideCursor);addEventListener('blur',hideCursor);
@@ -258,6 +260,12 @@ async function navigate(url,{pop=false,restore=0}={}){
     const parsed=new DOMParser().parseFromString(await response.text(),'text/html');
     if(request.signal.aborted)return;
     const replacement=parsed.querySelector('.page-shell');if(!replacement)throw Error('Unknown page');
+    const outgoing=exitTypography(document.querySelector('.page-shell'),paused);
+    if(outgoing.length)await Promise.race([
+      Promise.allSettled(outgoing.map(animation=>animation.finished)),
+      new Promise(resolve=>setTimeout(resolve,390))
+    ]);
+    if(request.signal.aborted){outgoing.forEach(animation=>animation.cancel());return;}
     if(!pop){history.replaceState({...history.state,scroll:scrollY},'');history.pushState({scroll:0},'',url.href);}
     const from={...pose};document.querySelector('.page-shell').replaceWith(replacement);document.title=parsed.title;renderedRoute=url.pathname+url.search;
     const metadata='meta[name="description"],meta[property^="og:"],link[rel="canonical"],script[type="application/ld+json"]';
@@ -272,6 +280,7 @@ async function navigate(url,{pop=false,restore=0}={}){
   }catch(error){if(error.name!=='AbortError')location.assign(url.href);}
 }
 document.addEventListener('click',event=>{
+  activateGlyph(event,paused);
   const link=event.target.closest('a[href]');if(!link||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey||link.hasAttribute('download')||(link.target&&link.target!=='_self'))return;
   const url=new URL(link.href);if(url.origin!==location.origin||!url.pathname.endsWith('/'))return;
   if(url.pathname===location.pathname&&url.search===location.search){
