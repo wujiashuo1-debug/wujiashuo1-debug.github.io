@@ -21,11 +21,14 @@ export function composeScene(l,y){
   let side=mix(mobile?w*1.12:Math.min(w*.6,h*.88),h*(mobile?1.05:1.8),push);
   let opacity=mobile?mix(1,.23,push):1;
   if(home&&!mobile){
-    // Right-side gallery enters while the sphere takes the left margin.
-    x=mix(x,w*.03,work);cy=mix(cy,h*.40,work);side=mix(side,h*1.5,work);
-    // Recede behind the gallery, then return with the practice chapter.
-    x=mix(x,w*.50,workRead);cy=mix(cy,h*.86,workRead);side=mix(side,h*.24,workRead);
+    // The gallery takes visual priority. Lift the same sphere out of the
+    // reading area before the cards arrive, then bring it back for the burst.
+    x=mix(x,w*.48,work);cy=mix(cy,-h*.31,work);side=mix(side,h*1.08,work);
+    opacity=mix(opacity,.18,work);
+    x=mix(x,w*.5,workRead);cy=mix(cy,h*.88,workRead);side=mix(side,h*.3,workRead);
+    opacity=mix(opacity,.09,workRead);
     x=mix(x,w*.5,burstEntry);cy=mix(cy,h*.68,burstEntry);side=mix(side,h*.75,burstEntry);
+    opacity=mix(opacity,.88,burstEntry);
     const bloom=smooth(0,65,burst*100);
     x=mix(x,w*.12,bloom);cy=mix(cy,h*.44,bloom);side=mix(side,h*1.2,bloom);
   }else if(home){
@@ -34,10 +37,12 @@ export function composeScene(l,y){
     x=mix(x,w*1.3,content);
   }else{
     const isWork=l.route==='work',isContact=l.route==='contact';
-    x=w*(isWork?.52:isContact?.85:1.01);cy=h*(isWork?.72:isContact?.62:.49);
-    side=h*(isWork?.98:isContact?1.35:1.42);
-    x=mix(x,w*(isWork?.08:1.12),work);side=mix(side,h*(isWork?1.1:1.3),work);
-    opacity=mobile?.26:mix(1,isWork?.18:.65,workRead);
+    x=w*(isWork?.88:isContact?.85:1.01);cy=h*(isWork?.36:isContact?.62:.49);
+    side=h*(isWork?1.05:isContact?1.35:1.42);
+    x=mix(x,w*(isWork?1.18:1.12),work);
+    cy=mix(cy,isWork?-h*.2:h*.49,work);
+    side=mix(side,h*(isWork?.92:1.3),work);
+    opacity=mobile?.26:mix(1,isWork?.16:.65,work);
     if(mobile){x=w*1.15;side=h*.85;}
   }
   x=mix(x,w*(mobile?1.22:1.06),closing);
