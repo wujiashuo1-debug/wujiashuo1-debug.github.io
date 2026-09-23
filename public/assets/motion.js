@@ -254,6 +254,57 @@ setupPage();place(performance.now());start();
 let navigation=null,renderedRoute=location.pathname+location.search;
 const announcer=document.createElement('span');announcer.className='sr-only';announcer.setAttribute('role','status');document.body.append(announcer);
 history.scrollRestoration='manual';
+function visibleInViewport(element){
+  const box=element.getBoundingClientRect();
+  return box.bottom>0&&box.top<innerHeight;
+}
+function exitPage(main,footer){
+  if(paused)return [];
+  const animations=exitTypography(document.querySelector('.page-shell'));
+  animations.push(main.animate([
+    {opacity:1,transform:'translate3d(0,0,0)'},
+    {opacity:0,transform:'translate3d(0,-24px,0)'}
+  ],{duration:220,easing:'cubic-bezier(.5,0,.78,.2)',fill:'forwards'}));
+  if(visibleInViewport(footer))animations.push(footer.animate([
+    {opacity:1,transform:'translate3d(0,0,0)'},
+    {opacity:0,transform:'translate3d(0,-18px,0)'}
+  ],{duration:220,easing:'cubic-bezier(.5,0,.78,.2)',fill:'forwards'}));
+  return animations;
+}
+function enterPage(main){
+  if(paused)return;
+  main.animate([
+    {opacity:.86,transform:'translate3d(0,18px,0)'},
+    {opacity:1,transform:'translate3d(0,0,0)'}
+  ],{duration:570,easing:'cubic-bezier(.16,.78,.2,1)'});
+  const intro=main.querySelector(':scope > .page-intro, :scope > .case-intro, :scope > .home-opening');
+  if(!intro)return;
+  const eyebrow=intro.querySelector(':scope > .eyebrow, .landing-overline');
+  eyebrow?.animate([
+    {opacity:0,transform:'translate3d(-18px,0,0)'},
+    {opacity:1,transform:'translate3d(0,0,0)'}
+  ],{duration:470,easing:'cubic-bezier(.2,.7,.25,1)'});
+  const support=[...intro.children].filter(el=>el.matches('p:not(.eyebrow),.about-intro'));
+  if(intro.matches('.home-opening'))support.push(intro.querySelector('.landing-bottom'));
+  support.forEach((el,index)=>el.animate([
+    {opacity:0,transform:'translate3d(0,20px,0)'},
+    {opacity:1,transform:'translate3d(0,0,0)'}
+  ],{duration:560,delay:130+index*65,easing:'cubic-bezier(.2,.7,.25,1)',fill:'backwards'}));
+  const next=intro.nextElementSibling;
+  if(next&&next.getBoundingClientRect().top<innerHeight*1.15)next.animate([
+    {opacity:0,transform:'translate3d(0,26px,0)'},
+    {opacity:1,transform:'translate3d(0,0,0)'}
+  ],{duration:650,delay:210,easing:'cubic-bezier(.2,.7,.25,1)',fill:'backwards'});
+}
+function updateNavigation(parsed){
+  const current=document.querySelector('#main-nav');
+  const incoming=parsed.querySelector('#main-nav');
+  for(const link of current?.querySelectorAll('a[href]')||[]){
+    const active=incoming.querySelector(`a[href="${link.getAttribute('href')}"]`)?.getAttribute('aria-current');
+    if(active)link.setAttribute('aria-current',active);
+    else link.removeAttribute('aria-current');
+  }
+}
 async function navigate(url,{pop=false,restore=0}={}){
   navigation?.abort();const request=new AbortController();navigation=request;
   try{
@@ -262,14 +313,19 @@ async function navigate(url,{pop=false,restore=0}={}){
     const parsed=new DOMParser().parseFromString(await response.text(),'text/html');
     if(request.signal.aborted)return;
     const replacement=parsed.querySelector('.page-shell');if(!replacement)throw Error('Unknown page');
-    const outgoing=exitTypography(document.querySelector('.page-shell'),paused);
+    const oldMain=document.querySelector('.page-shell main'),oldFooter=document.querySelector('.page-shell .site-footer');
+    const outgoing=exitPage(oldMain,oldFooter);
     if(outgoing.length)await Promise.race([
       Promise.allSettled(outgoing.map(animation=>animation.finished)),
-      new Promise(resolve=>setTimeout(resolve,390))
+      new Promise(resolve=>setTimeout(resolve,240))
     ]);
     if(request.signal.aborted){outgoing.forEach(animation=>animation.cancel());return;}
     if(!pop){history.replaceState({...history.state,scroll:scrollY},'');history.pushState({scroll:0},'',url.href);}
-    const from={...pose};document.querySelector('.page-shell').replaceWith(replacement);document.title=parsed.title;renderedRoute=url.pathname+url.search;
+    const from={...pose};
+    oldMain.replaceWith(replacement.querySelector('main'));
+    oldFooter.replaceWith(replacement.querySelector('.site-footer'));
+    updateNavigation(parsed);
+    document.title=parsed.title;renderedRoute=url.pathname+url.search;
     const metadata='meta[name="description"],meta[property^="og:"],link[rel="canonical"],script[type="application/ld+json"]';
     document.head.querySelectorAll(metadata).forEach(el=>el.remove());parsed.head.querySelectorAll(metadata).forEach(el=>document.head.append(el.cloneNode(true)));
     document.dispatchEvent(new Event('portfolio:page'));setupPage();
@@ -277,7 +333,7 @@ async function navigate(url,{pop=false,restore=0}={}){
     scrollTo({top:hash?hash.getBoundingClientRect().top+scrollY:restore,behavior:'instant'});directedY=scrollY;measure();
     travel=paused?null:{from,start:performance.now()};place(performance.now());
     const main=document.querySelector('main');main.setAttribute('tabindex','-1');main.focus({preventScroll:true});announcer.textContent=document.title;
-    if(!paused)main.animate([{opacity:.5},{opacity:1}],{duration:320,easing:'ease-out'});
+    enterPage(main);
     start();navigation=null;
   }catch(error){if(error.name!=='AbortError')location.assign(url.href);}
 }
