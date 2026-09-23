@@ -14,7 +14,7 @@ export function composeScene(l,y){
   const burst=Number.isFinite(l.burstTop)?clamp((y-l.burstTop)/Math.max(1,l.burstHeight-h)):0;
   const burstEntry=Number.isFinite(l.burstTop)?smooth(l.burstTop-h*.7,l.burstTop,y):0;
   const finale=Number.isFinite(l.finaleTop)?clamp((y-l.finaleTop)/Math.max(1,l.finaleHeight-h)):0;
-  const retire=smooth(48,88,burst*100);
+  const retire=smooth(55,95,burst*100);
   const closing=smooth(l.footerTop-h*.7,l.max,y);
   let x=mix(w*.52,w*(mobile?1.2:1.01),push);
   let cy=mix(l.heroTop+l.heroHeight*.44,h*.49,push);
@@ -29,12 +29,16 @@ export function composeScene(l,y){
     opacity=mix(opacity,.09,workRead);
     x=mix(x,w*.5,burstEntry);cy=mix(cy,h*.68,burstEntry);side=mix(side,h*.75,burstEntry);
     opacity=mix(opacity,.88,burstEntry);
-    const bloom=smooth(0,65,burst*100);
+    const bloom=smooth(8,82,burst*100);
     x=mix(x,w*.12,bloom);cy=mix(cy,h*.44,bloom);side=mix(side,h*1.2,bloom);
   }else if(home){
     x=mix(x,w*1.3,work);side=mix(side,h*.8,work);
     x=mix(x,w*.95,practice);side=mix(side,w*1.3,practice);opacity=mix(opacity,.28,practice);
     x=mix(x,w*1.3,content);
+    x=mix(x,w*.52,burstEntry);cy=mix(cy,h*.44,burstEntry);
+    side=mix(side,w*1.12,burstEntry);opacity=mix(opacity,.52,burstEntry);
+    const bloom=smooth(8,82,burst*100);
+    x=mix(x,w*.14,bloom);side=mix(side,w*1.45,bloom);
   }else{
     const isWork=l.route==='work',isContact=l.route==='contact';
     x=w*(isWork?.88:isContact?.85:1.01);cy=h*(isWork?.36:isContact?.62:.49);

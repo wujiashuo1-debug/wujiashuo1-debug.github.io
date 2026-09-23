@@ -141,17 +141,18 @@ function choreograph(scene){
     const p=scene.burst*100;
     burst.style.setProperty('--burst-title',String(1-smooth(8,34,p)));
     burst.style.setProperty('--burst-title-y',`${-smooth(8,40,p)*70}px`);
-    burst.style.setProperty('--burst-caption',String(smooth(26,47,p)*(1-smooth(70,90,p))));
-    // Fixed art direction: three depths fan out from one origin, then pass above.
+    burst.style.setProperty('--burst-caption',String((mobile?smooth(56,72,p):smooth(26,47,p))*(1-smooth(mobile?86:70,100,p))));
+    // Let each layer rise, open and leave in one continuous scroll gesture.
     const destinations=[[-.39,-.31,.84,-13],[.07,-.36,.65,8],[.40,-.23,.86,12],[-.26,.04,1,-7],[.26,.02,1.06,6],[-.04,.31,.90,-4],[-.44,.35,.67,9],[.43,.38,.7,-10],[-.10,-.12,.6,-9],[.20,.34,.65,12],[-.40,-.04,.55,-14],[.34,-.43,.55,7]];
     burstTiles.forEach((el,i)=>{
-      const [x,y,size,rotation]=destinations[i%destinations.length],entry=smooth(i%3*3,48+i%3*3,p),exit=smooth(57+i%3*3,100,p);
-      const spread=1+exit*.9;
-      el.style.setProperty('--bx',`${x*layout.w*entry*spread}px`);
-      el.style.setProperty('--by',`${layout.h*(.83*(1-entry)+y*entry-exit*(1.25+(i%3)*.25))}px`);
-      el.style.setProperty('--bs',String(mix(.22,size,entry)*(1+exit*.3)));
-      el.style.setProperty('--br',`${rotation*entry+exit*rotation*.7}deg`);
-      el.style.setProperty('--bo',String(smooth(0,12,p)*(1-smooth(84,100,p))));
+      const [x,y,size,rotation]=destinations[i%destinations.length];
+      const delay=(i%4)*2.4+Math.floor(i/4)*1.2;
+      const entry=smooth(2+delay,64+delay,p),exit=smooth(53+delay*.25,100,p);
+      el.style.setProperty('--bx',`${x*layout.w*entry*(mobile?.72:1)*(1+exit*.12)}px`);
+      el.style.setProperty('--by',`${layout.h*(.76*(1-entry)+y*entry-exit*(.78+(i%3)*.12))}px`);
+      el.style.setProperty('--bs',String(mix(.2,size,entry)*(1-exit*.12)));
+      el.style.setProperty('--br',`${rotation*entry*(1+exit*.2)}deg`);
+      el.style.setProperty('--bo',String(smooth(0,13+delay*.3,p)*(1-smooth(78,100,p))));
       el.style.zIndex=String(Math.round(size*10));
     });
   }
@@ -214,7 +215,7 @@ let sampleTime=0,sampleFrames=0,slowSamples=0;
 function tick(now){
   frame=0;if(paused||document.hidden)return;
   const elapsed=(now-lastFrame)/1000;lastFrame=now;const dt=clamp(elapsed,0,.05);
-  if(Math.abs(scrollY-directedY)>.05){directedY+=(scrollY-directedY)*(1-Math.exp(-dt/.085));scrollDirty=true;}else directedY=scrollY;
+  if(Math.abs(scrollY-directedY)>.05){directedY+=(scrollY-directedY)*(1-Math.exp(-dt/.055));scrollDirty=true;}else directedY=scrollY;
   if(layoutDirty)measure();
   place(now);if(pose.opacity>.005)water.advance(dt);updateCursor(dt);
   sampleTime+=elapsed;sampleFrames++;
