@@ -1,0 +1,65 @@
+/* Composition layer. Each chapter assigns foreground, depth and reading space. */
+.water-orbit{position:absolute;inset:-6%;border:1px solid #24282016;border-radius:50%;transform:rotate(-24deg) scaleX(.93);pointer-events:none}
+.water-orbit:last-child{inset:-17%;border-color:#2428200c;transform:rotate(30deg) scaleX(.9)}
+.landing-title{font-family:'Space Grotesk',sans-serif;font-weight:400;letter-spacing:-.06em;font-size:clamp(60px,7.4vw,112px)}
+.line-three{font-weight:400;letter-spacing:-.055em}.wordmark{font-weight:500}
+.introduction>div:last-child{width:70%;max-width:900px}.introduction h2{font-size:clamp(40px,5.4vw,76px);font-weight:400;line-height:1.16;margin-bottom:60px}
+.introduction p:not(.eyebrow){max-width:580px;font-size:16px;line-height:1.9}
+.selected-section{background:transparent;padding:110px 0 140px;display:grid;grid-template-columns:28% 1fr;gap:5%;align-items:start;position:relative}
+.selected-section>.section-heading{position:sticky;top:90px;display:block;margin:0;z-index:2}
+.selected-section .section-heading h2{font-size:clamp(40px,4.5vw,68px);font-weight:400;line-height:1.02}
+.selected-section .section-side{margin-top:36px;font-size:13px;max-width:240px}.selected-section .section-number{display:none}
+.selected-section .text-link{font-size:13px;gap:18px;margin-top:20px}
+.project-grid{gap:54px 22px;align-items:start}.project-card:nth-child(odd){margin-top:0}
+.selected-section .project-card:nth-child(odd){transform:translate3d(0,var(--column-offset,90px),0)}
+.project-card{position:relative;opacity:1;transform:none;min-width:0}
+.project-visual{border-radius:7px;aspect-ratio:1;overflow:hidden;background-image:none!important}
+.project-visual.global{background-color:#d7ddd0}.project-visual.commerce{background-color:#e1cbbb}.project-visual.agent{background-color:#d1dbe4}
+.project-visual.etsy{background-color:#e8dccb}.project-visual.tools{background-color:#d5d5e1}.project-visual.content{background-color:#ddd7c4}
+.project-card p{color:#4b5149;font-size:13px;line-height:1.75}.project-card h3{font-size:23px;font-weight:400}
+.project-card .card-meta{font-size:9px;gap:8px}.project-card .card-meta>span:last-child{display:none}
+.project-card .visual-label{left:18px;top:18px;font-size:9px}.project-card .visual-caption{left:18px;font-size:8px}
+.project-visual>svg{width:108%;max-width:none;margin-left:-4%}
+.practice-section{height:190svh;position:relative;margin:0 calc(-1 * var(--gutter))}
+.practice-stage{position:sticky;top:0;height:100svh;min-height:680px;overflow:hidden;padding:55px var(--gutter)}
+.practice-heading{position:relative;z-index:2;text-align:center;opacity:var(--practice-title,1);transform:translateY(var(--practice-title-y,0px))}
+.practice-heading h2{font-size:clamp(35px,4vw,58px);font-weight:400;line-height:1.2;letter-spacing:-.045em}
+.practice-heading .eyebrow{font-size:10px;margin-bottom:18px}
+.practice-field{position:absolute;inset:0;perspective:1100px}
+.practice-card{position:absolute;width:clamp(235px,24vw,350px);padding:20px;background:#eeede7;border:1px solid #343a281b;border-radius:8px;transform:translate3d(var(--px,0px),var(--py,0px),var(--pz,0px)) rotate(var(--pr,0deg));opacity:var(--po,1);will-change:transform}
+.practice-card .eyebrow{font-size:9px;margin:0}.practice-card h3{font-size:clamp(23px,2.5vw,35px);font-weight:400;line-height:1.1;margin:18px 0 12px}
+.practice-card p{font-size:12px;margin:0;line-height:1.7}.practice-flow{margin:12px 0;padding:10px 0;border-top:1px solid #343a2826;border-bottom:1px solid #343a2826;font-size:12px}
+.practice-card small{font-size:9px;color:#60645c;line-height:1.7;display:block}
+.practice-0{left:7%;top:27%}.practice-1{right:7%;top:21%;background:#d8dfd5}.practice-2{left:16%;bottom:8%;background:#d5dee1}.practice-3{right:12%;bottom:4%;background:#e3d8c9}
+.practice-note{position:absolute;bottom:24px;left:0;right:0;text-align:center;font-size:11px;z-index:2;opacity:var(--practice-title,1)}
+.practice-note .text-link{display:inline-flex;font-size:11px;margin-left:20px;gap:10px}
+.content-section{padding:140px 0 130px;display:grid;grid-template-columns:32% 1fr;gap:4%;align-items:start}
+.content-section>.section-heading{display:block;margin:0;position:sticky;top:100px}
+.content-section .section-heading h2{font-size:clamp(44px,5vw,70px);font-weight:400}.content-section .section-side{font-size:13px;margin-top:30px}
+.content-feature{display:block;padding:38px;background:#eeede8;border:1px solid #383d291c;border-radius:8px;transform:none;opacity:1}
+.content-feature h3{font-size:36px}.content-feature p{font-size:15px}.content-section>.workflow{grid-column:2;font-size:11px;flex-wrap:wrap;gap:15px;margin-top:0}
+.content-section .profit-block{border:0;border-top:1px solid #1d1d1d26;padding:30px 0 0;margin-top:34px}.content-section .profit-block strong{margin:20px 0;font-weight:400}
+.footer-main h2{font-weight:400}
+body[data-scene="work"] .page-intro{min-height:0;padding:35px 6% 0;height:400px}
+body[data-scene="work"] .page-intro h1{font-size:clamp(64px,10vw,145px);max-width:100%;font-weight:400;line-height:.98}
+body[data-scene="work"] .page-intro>p:not(.eyebrow){font-size:13px;margin-top:25px}
+body[data-scene="work"] main>.project-grid{position:relative;margin:0 6%;grid-template-columns:repeat(2,minmax(0,1fr));gap:60px 24px}
+body[data-scene="work"] .project-card:nth-child(odd){margin:0}
+body[data-scene="contact"] .cinema-intro{min-height:0;padding:55px 0 65px}
+body[data-scene="contact"] .cinema-intro h1{max-width:90%;font-weight:400;font-size:clamp(55px,8vw,115px)}
+body[data-scene="contact"] .direct-contact{position:relative;background:#eeede8;border:1px solid #1d1d1d26;padding:10px 35px;border-radius:8px}
+.academic-foundations,.case-body,.capabilities,.now-list,.archive-section{position:relative}
+@media(max-width:900px) and (min-width:701px){.practice-card{width:240px;padding:18px}.practice-0{left:2%}.practice-1{right:2%}.practice-2{left:8%}.practice-3{right:5%}.selected-section{grid-template-columns:24% 1fr;gap:3%}.project-grid{gap:45px 16px}.project-card h3{font-size:20px}}
+@media(max-width:700px){
+ .landing-title{font-size:9.2vw}.line-three{font-size:12vw}.water-orbit{border-color:#2428200d}
+ .introduction>div:last-child{width:100%}.introduction h2{font-size:35px;margin-bottom:35px}.introduction p:not(.eyebrow){font-size:15px}
+ .selected-section{display:block;padding:65px 0}.selected-section>.section-heading{position:static;display:block;margin-bottom:40px}.selected-section .section-heading h2{font-size:48px}.selected-section .section-heading h2 br{display:none}.selected-section .section-side{max-width:100%;margin-top:24px}
+ .selected-section .project-card:nth-child(odd){transform:none}.project-grid{gap:45px}.project-card h3{font-size:25px}.project-card p{font-size:14px}
+ .practice-section{height:auto;margin:0;padding:70px 0}.practice-stage{position:relative;height:auto;min-height:0;overflow:visible;padding:0}.practice-heading{text-align:left;opacity:1!important;transform:none!important}.practice-heading h2{font-size:36px}
+ .practice-field{position:relative;display:grid;gap:15px;margin:45px 0 25px;perspective:none}.practice-card{position:relative;inset:auto;width:100%;padding:24px;transform:none!important;opacity:1!important;will-change:auto}.practice-card h3{font-size:30px}.practice-note{position:relative;inset:auto;text-align:left;opacity:1!important;line-height:2}.practice-note .text-link{margin-left:0;display:flex}
+ .content-section{display:block;padding:75px 0}.content-section>.section-heading{position:static;margin-bottom:35px}.content-section .section-heading h2{font-size:48px}.content-feature{padding:25px}.content-feature h3{font-size:30px}.content-section>.workflow{margin-top:25px}.content-section .profit-block strong{font-size:60px}
+ body[data-scene="work"] .page-intro{height:auto;padding:55px 0 45px}body[data-scene="work"] .page-intro h1{font-size:13vw}body[data-scene="work"] main>.project-grid{margin:0;grid-template-columns:1fr}
+ body[data-scene="contact"] .cinema-intro h1{max-width:100%;font-size:12vw}body[data-scene="contact"] .direct-contact{padding:0 22px}
+}
+.motion-paused .practice-card{transform:none!important;opacity:1!important}.motion-paused .practice-heading,.motion-paused .practice-note{transform:none!important;opacity:1!important}
+@media(prefers-reduced-motion:reduce){.practice-card{transform:none!important;opacity:1!important;will-change:auto}.practice-heading,.practice-note{transform:none!important;opacity:1!important}}
